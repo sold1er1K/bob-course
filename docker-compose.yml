@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres123
+      - DB_NAME=autosale
+      - JWT_SECRET=your_super_secret_jwt_key_change_me
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./public/uploads:/app/public/uploads
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres123
+      - POSTGRES_DB=autosale
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./sql/create-admin.sql:/docker-entrypoint-initdb.d/02-create-admin.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d autosale"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

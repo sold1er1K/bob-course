@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BobAuto - Главная</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Bob<span>Auto</span></h1>
+                    <p>Продавай. Покупай. Обсуждай.</p>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <a href="/create-ad" id="createAdBtn" class="create-ad-btn" style="display: none;">➕ Подать объявление</a>
+                    
+                    <div class="user-menu" id="userMenu" style="display: none;">
+                        <div class="user-info" onclick="toggleDropdown()">
+                            <img id="userAvatar" class="user-avatar" src="/uploads/avatars/default.png" alt="Аватар">
+                            <span id="userName" class="user-name">Загрузка...</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </div>
+                        <div class="dropdown-menu" id="dropdownMenu">
+                            <a href="/profile/me">📱 Личный кабинет</a>
+                            <a href="/favorites">⭐ Избранное</a>
+                            <a href="#" id="adminPanelLink" style="display: none; background: #e63946; color: white;">👑 Админ-панель</a>
+                            <a href="#" onclick="logout()">🚪 Выйти</a>
+                        </div>
+                    </div>
+                    
+                    <div class="guest-menu" id="guestMenu">
+                        <a href="/login" class="register-btn">Авторизоваться</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="hero">
+                <h2>Добро пожаловать на BobAuto!</h2>
+                <p>Крупнейший сервис по продаже автомобилей и их обсуждению</p>
+            </div>
+
+            <!-- Фильтры поиска -->
+            <div class="filters">
+                <input type="text" id="brandFilter" placeholder="Марка автомобиля">
+                <input type="text" id="modelFilter" placeholder="Модель">
+                <input type="number" id="priceFrom" placeholder="Цена от">
+                <input type="number" id="priceTo" placeholder="Цена до">
+                <button onclick="searchCars()">🔍 Поиск</button>
+            </div>
+
+            <div class="cars-list" id="carsList">
+                <div class="loading">Загрузка объявлений...</div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .guest-menu {
+            display: flex;
+            gap: 15px;
+        }
+        .login-btn, .register-btn {
+            padding: 8px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .login-btn {
+            background: transparent;
+            color: white;
+            border: 1px solid white;
+        }
+        .login-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .register-btn {
+            background: #e63946;
+            color: white;
+        }
+        .register-btn:hover {
+            background: #c1121f;
+        }
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .filters input, .filters button {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+        }
+        .filters input {
+            flex: 1;
+            min-width: 150px;
+        }
+        .filters button {
+            background: #e63946;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .cars-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        .car-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .car-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .car-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+        .car-info {
+            padding: 20px;
+        }
+        .car-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .car-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: #e63946;
+            margin-bottom: 10px;
+        }
+        .car-details {
+            color: #666;
+            font-size: 14px;
+        }
+        .loading, .error-message {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        .error-message {
+            color: #e63946;
+        }
+    </style>
+
+    <script src="/js/main-page.js"></script>
+</body>
+</html>

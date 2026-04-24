@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Просмотр объявления | BobAuto</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .car-detail-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .car-header {
+            padding: 30px;
+            border-bottom: 1px solid #eee;
+            position: relative;
+        }
+        .car-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .car-price {
+            font-size: 36px;
+            font-weight: 700;
+            color: #e63946;
+        }
+        .favorite-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .favorite-btn:hover {
+            transform: scale(1.05);
+        }
+        .car-body {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        .car-specs {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+        }
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .spec-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        .spec-value {
+            color: #212529;
+        }
+        .car-description {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+        .car-description h3 {
+            margin-bottom: 15px;
+        }
+        .seller-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        .seller-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .comments-section {
+            padding: 30px;
+            border-top: 1px solid #eee;
+        }
+        .comment-form {
+            margin-bottom: 30px;
+        }
+        .comment-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+        }
+        .comment-form button {
+            margin-top: 10px;
+            background: #e63946;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .comment {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .comment-content {
+            flex: 1;
+        }
+        .comment-author {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .comment-text {
+            color: #495057;
+        }
+        .comment-date {
+            font-size: 12px;
+            color: #adb5bd;
+            margin-top: 5px;
+        }
+        .comment-actions {
+            display: flex;
+            gap: 5px;
+        }
+        .comment-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        .comment-actions button:hover {
+            transform: scale(1.1);
+        }
+        .edit-btn { background: #ffc107; color: #333; padding: 5px 10px; }
+        .delete-btn { background: #dc3545; color: white; padding: 5px 10px; }
+        .hide-btn { background: #ffc107; color: #333; padding: 5px 10px; }
+        .admin-delete-btn { background: #dc3545; color: white; padding: 5px 10px; }
+        .delete-car-btn {
+            margin-top: 15px;
+            background: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .back-btn {
+            display: inline-block;
+            margin: 20px;
+            padding: 10px 20px;
+            background: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+        }
+        @media (max-width: 768px) {
+            .car-body {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Bob<span>Auto</span></h1>
+                    <p>Продавай. Покупай. Обсуждай.</p>
+                </div>
+                <a href="/" class="back-btn">← На главную</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div id="carContent" class="loading">
+                Загрузка объявления...
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const carId = window.location.pathname.split('/').pop();
+        let currentUserId = null;
+        let currentUserRole = null;
+
+        // Получить данные текущего пользователя
+        async function getCurrentUser() {
+            if (!token) return;
+            try {
+                const res = await fetch('/profile/api/user', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const user = await res.json();
+                    currentUserId = user.id;
+                    currentUserRole = user.role_id;
+                }
+            } catch (error) {
+                console.error('Ошибка получения пользователя:', error);
+            }
+        }
+
+        // Проверка в избранном
+        async function checkFavorite() {
+            if (!token) return;
+            try {
+                const res = await fetch(`/api/favorites/${carId}/check`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    const favBtn = document.getElementById('favoriteBtn');
+                    if (favBtn) {
+                        favBtn.textContent = data.isFavorite ? '❤️ В избранном' : '🤍 В избранное';
+                        favBtn.style.background = data.isFavorite ? '#dc3545' : '#6c757d';
+                    }
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
+        // Добавить/удалить из избранного
+        async function toggleFavorite() {
+            if (!token) {
+                alert('Войдите, чтобы добавить в избранное');
+                return;
+            }
+            
+            try {
+                const checkRes = await fetch(`/api/favorites/${carId}/check`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const { isFavorite } = await checkRes.json();
+                
+                const res = await fetch(`/api/favorites/${carId}`, {
+                    method: isFavorite ? 'DELETE' : 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (res.ok) {
+                    checkFavorite();
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Ошибка при добавлении в избранное');
+            }
+        }
+
+        // Загрузка объявления
+        async function loadCar() {
+            await getCurrentUser();
+            
+            try {
+                const res = await fetch(`/api/cars/${carId}`);
+                if (!res.ok) throw new Error('Объявление не найдено');
+                
+                const data = await res.json();
+                const car = data.car;
+                const comments = data.comments || [];
+                const isAdmin = currentUserRole === 2;
+                const isModerator = currentUserRole === 3;
+                const isOwner = token && car.user_id === currentUserId;
+                
+                document.getElementById('carContent').innerHTML = `
+                    <div class="car-detail-container">
+                        <div class="car-header">
+                            <h1 class="car-title">${car.brand} ${car.model}</h1>
+                            <div class="car-price">${Number(car.price).toLocaleString()} BYN</div>
+                            <button class="favorite-btn" id="favoriteBtn" onclick="toggleFavorite()">🤍 В избранное</button>
+                            ${isAdmin ? `
+                                <button class="delete-car-btn" onclick="deleteCar()">🗑️ Удалить объявление (Админ)</button>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="car-body">
+                            <div class="car-specs">
+                                <h3>Характеристики</h3>
+                                <div class="spec-item">
+                                    <span class="spec-label">Год выпуска:</span>
+                                    <span class="spec-value">${car.year}</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Пробег:</span>
+                                    <span class="spec-value">${Number(car.mileage).toLocaleString()} км</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Объявление №:</span>
+                                    <span class="spec-value">${car.id}</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Дата размещения:</span>
+                                    <span class="spec-value">${new Date(car.created_at).toLocaleDateString('ru-RU')}</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="car-description">
+                                    <h3>Описание</h3>
+                                    <p>${car.description || 'Описание отсутствует'}</p>
+                                </div>
+                                
+                                <div class="seller-info">
+                                    <img class="seller-avatar" src="${car.owner_avatar || '/uploads/avatars/default.png'}" alt="Продавец">
+                                    <div>
+                                        <div style="font-weight: 600;">${car.owner_name || 'Продавец'}</div>
+                                        <div style="font-size: 14px; color: #6c757d;">Продавец</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="comments-section">
+                            <h3>Комментарии (${comments.length})</h3>
+                            
+                            ${token ? `
+                                <div class="comment-form">
+                                    <textarea id="commentText" placeholder="Напишите комментарий..."></textarea>
+                                    <button onclick="addComment()">Отправить комментарий</button>
+                                </div>
+                            ` : `
+                                <p style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                                    <a href="/login" style="color: #e63946;">Войдите</a>, чтобы оставить комментарий
+                                </p>
+                            `}
+                            
+                            <div id="commentsList">
+                                ${comments.map(comment => {
+                                    const isCommentOwner = token && comment.user_id === currentUserId;
+                                    const canHide = (isModerator || isAdmin) && !isCommentOwner;
+                                    
+                                    return `
+                                        <div class="comment" id="comment-${comment.id}">
+                                            <img class="comment-avatar" src="${comment.user_avatar || '/uploads/avatars/default.png'}" alt="Аватар">
+                                            <div class="comment-content">
+                                                <div class="comment-author">
+                                                    ${comment.user_name} 
+                                                    ${comment.user_role === 2 ? '👑 Админ' : ''}
+                                                    ${comment.user_role === 3 ? '🛡️ Модератор' : ''}
+                                                </div>
+                                                <div class="comment-text" id="comment-text-${comment.id}">${escapeHtml(comment.content)}</div>
+                                                <div class="comment-date">${new Date(comment.created_at).toLocaleString('ru-RU')}</div>
+                                            </div>
+                                            <div class="comment-actions">
+                                                ${isCommentOwner ? `
+                                                    <button class="edit-btn" onclick="editComment(${comment.id}, '${escapeHtml(comment.content).replace(/'/g, "\\'")}')" title="Редактировать">✏️</button>
+                                                    <button class="delete-btn" onclick="deleteMyComment(${comment.id})" title="Удалить">🗑️</button>
+                                                ` : ''}
+                                                ${canHide ? `
+                                                    <button class="hide-btn" onclick="hideComment(${comment.id})" title="Скрыть комментарий">🔒</button>
+                                                ` : ''}
+                                                ${isAdmin && !isCommentOwner ? `
+                                                    <button class="admin-delete-btn" onclick="deleteComment(${comment.id})" title="Удалить (Админ)">👑🗑️</button>
+                                                ` : ''}
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Проверяем статус избранного
+                checkFavorite();
+            } catch (error) {
+                document.getElementById('carContent').innerHTML = `
+                    <div style="text-align: center; padding: 50px;">
+                        <div style="font-size: 64px; margin-bottom: 20px;">😢</div>
+                        <div style="font-size: 24px;">Объявление не найдено</div>
+                        <a href="/" style="display: inline-block; margin-top: 20px; color: #e63946;">Вернуться на главную</a>
+                    </div>
+                `;
+            }
+        }
+
+        // Добавление комментария
+        async function addComment() {
+            const content = document.getElementById('commentText').value;
+            if (!content.trim()) {
+                alert('Введите текст комментария');
+                return;
+            }
+            
+            try {
+                const res = await fetch(`/api/cars/${carId}/comments`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ content })
+                });
+                
+                if (res.ok) {
+                    document.getElementById('commentText').value = '';
+                    loadCar();
+                } else {
+                    const data = await res.json();
+                    alert('Ошибка: ' + (data.error || 'Не удалось добавить комментарий'));
+                }
+            } catch (error) {
+                alert('Ошибка сервера');
+            }
+        }
+
+        // Редактирование комментария
+        async function editComment(commentId, oldContent) {
+            const newContent = prompt('Редактировать комментарий:', oldContent);
+            if (newContent && newContent !== oldContent) {
+                try {
+                    const res = await fetch(`/api/comments/${commentId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ content: newContent })
+                    });
+                    
+                    if (res.ok) {
+                        alert('✅ Комментарий обновлен');
+                        loadCar();
+                    } else {
+                        const data = await res.json();
+                        alert('❌ ' + (data.error || 'Ошибка редактирования'));
+                    }
+                } catch (error) {
+                    alert('❌ Ошибка сервера');
+                }
+            }
+        }
+
+        // Удаление своего комментария
+        async function deleteMyComment(commentId) {
+            if (confirm('Удалить свой комментарий?')) {
+                try {
+                    const res = await fetch(`/api/comments/${commentId}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    if (res.ok) {
+                        alert('✅ Комментарий удален');
+                        document.getElementById(`comment-${commentId}`)?.remove();
+                    } else {
+                        alert('❌ Ошибка удаления');
+                    }
+                } catch (error) {
+                    alert('❌ Ошибка сервера');
+                }
+            }
+        }
+
+        // Скрыть комментарий (для модераторов и админов)
+        async function hideComment(commentId) {
+            if (confirm('Скрыть этот комментарий?')) {
+                try {
+                    const res = await fetch(`/api/admin/comments/${commentId}/moderate`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ status: 'hidden' })
+                    });
+                    
+                    if (res.ok) {
+                        alert('✅ Комментарий скрыт');
+                        document.getElementById(`comment-${commentId}`)?.remove();
+                    } else {
+                        alert('❌ Ошибка');
+                    }
+                } catch (error) {
+                    alert('❌ Ошибка сервера');
+                }
+            }
+        }
+
+        // Удаление комментария (только для админов)
+        async function deleteComment(commentId) {
+            if (confirm('Удалить этот комментарий?')) {
+                try {
+                    const res = await fetch(`/api/admin/comments/${commentId}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    if (res.ok) {
+                        alert('✅ Комментарий удален');
+                        document.getElementById(`comment-${commentId}`)?.remove();
+                    } else {
+                        alert('❌ Ошибка');
+                    }
+                } catch (error) {
+                    alert('❌ Ошибка сервера');
+                }
+            }
+        }
+
+        // Удаление объявления (для админов)
+        async function deleteCar() {
+            if (confirm('Вы уверены, что хотите удалить это объявление?')) {
+                try {
+                    const res = await fetch(`/api/admin/cars/${carId}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    if (res.ok) {
+                        alert('✅ Объявление удалено');
+                        window.location.href = '/';
+                    } else {
+                        const data = await res.json();
+                        alert('❌ ' + (data.error || 'Не удалось удалить'));
+                    }
+                } catch (error) {
+                    alert('❌ Ошибка сервера');
+                }
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Загружаем страницу
+        loadCar();
+    </script>
+</body>
+</html>

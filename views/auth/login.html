@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dan'koAuto | Автообъявления</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-bg card-bg-1"></div>
+      <div class="card-bg card-bg-2"></div>
+      
+      <!-- Текст, который будет перемещаться -->
+      <div class="brand-overlay" id="brandOverlay">
+        <div class="brand-name">Dan'koAuto</div>
+        <div class="brand-slogan">Продавай. Покупай. Обсуждай.</div>
+      </div>
+      
+      <div class="form signin">
+        <form>
+          <h2>Вход</h2>
+          <input type="email" placeholder="Электронная почта" />
+          <input type="password" placeholder="Пароль" />
+          <p>Забыли пароль?</p>
+          <button>ВОЙТИ</button>
+          <a onclick="toggleView()">Нет аккаунта? <em>Зарегистрироваться</em></a>
+        </form>
+      </div>
+      <div class="form signup active">
+        <form>
+          <h2>Регистрация</h2>
+          <input type="text" placeholder="Имя" />
+          <input type="email" placeholder="Электронная почта" />
+          <input type="password" placeholder="Пароль" />
+          <button>ЗАРЕГИСТРИРОВАТЬСЯ</button>
+          <a onclick="toggleView()">Уже есть аккаунт? <em>Войти</em></a>
+        </form>
+      </div>
+    </div>
+    <script src="/js/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет | BobAuto</title>
+    <link rel="stylesheet" href="/css/profile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Bob<span>Auto</span></h1>
+                    <p>Личный кабинет</p>
+                </div>
+                <a href="/" class="home-link">🏠 На главную</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="profile-container">
+                <div class="profile-sidebar">
+                    <div class="avatar-section">
+                        <img id="profileAvatar" class="profile-avatar" src="/uploads/avatars/default.png" alt="Аватар">
+                        <label for="avatarUpload" class="upload-btn">📸 Сменить аватар</label>
+                        <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                        <div id="uploadStatus" class="upload-status"></div>
+                    </div>
+                </div>
+                
+                <div class="profile-info">
+                    <h2>Информация о пользователе</h2>
+                    <div class="info-field">
+                        <label>Имя:</label>
+                        <span id="displayName"></span>
+                    </div>
+                    <div class="info-field">
+                        <label>Email:</label>
+                        <span id="displayEmail"></span>
+                    </div>
+                    <div class="info-field">
+                        <label>Роль:</label>
+                        <span id="displayRole"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/profile.js"></script>
+</body>
+</html>
